@@ -1,35 +1,21 @@
 document.getElementById("promiseBtn").addEventListener("click",
     function()
     {
-        const promise = new Promise (function(resolve, reject){
-     
         document.getElementById("tableContent").innerHTML = "Loading...";
-        
-        setTimeout(() => {
-        
-            fetch('https://dummyjson.com/posts')
-            .then(response => {
-                if(response.ok) {
 
-                    resolve(response);
-                }
-                else {
-                    reject("***Not Found***");
-                }
-            })
-            .catch( () => {
+        Promise.race([
+            fetch("https://dummyjson.com/posts"),
+            new Promise((reject) => {
+              
+              setTimeout(() => reject(new Error("Operation timed out")), 5000);
+            }),
+            ])
+            .then((response) => response.json())
+            .then((jsonData => display(jsonData)))
+            .catch((error) => document.getElementById("tableContent").innerHTML = error.message );
 
-                reject("Operation timed out");
-            });
 
-        }, 5000)
-        });
-
-        promise.then( res => res.json()).then( json => display(json));
-        promise.catch(err => document.getElementById("tableContent").innerHTML = err)
-        
-    }
-)
+    })
 
 function display(json)
 {

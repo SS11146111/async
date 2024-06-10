@@ -4,14 +4,20 @@ document.getElementById("aaBtn").addEventListener("click",
         document.getElementById("tableContent").innerHTML = "Loading...";
    
         try{
-            const response = await fetch('https://dummyjson.com/posts');
-            const result = await response.json();
-            display(result);
-        }catch(error){
-            document.getElementById("tableContent").innerHTML = error;
+            const fetchObj = await fetch('https://dummyjjson.com/posts');
+            const timer = await new Promise((reject) => {
+              
+                setTimeout(() => reject(new Error("Operation timed out")), 5000);
+            })
+            Promise.race([fetchObj, timer])
+            .then((response) => response.json())
+            .then((jsonData => display(jsonData)))
         }
+        catch(error)
+        {
 
-        
+            document.getElementById("tableContent").innerHTML = error.message
+        }
     }
 )
 
