@@ -12,7 +12,7 @@ document.getElementById("asyncBtn").addEventListener("click",
             
             const timer = new Promise((resolve, reject) => {
               
-                setTimeout(() => reject(new Error("Operation timed out")), 2000);
+                setTimeout(() => reject(new Error("Operation timed out")), 5000);
             })
 
          
