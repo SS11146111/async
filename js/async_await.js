@@ -5,7 +5,9 @@ document.getElementById("asyncBtn").addEventListener("click",
         document.getElementById("tableContent").innerHTML = "Loading...";
    
         try{
-            
+            let responseObj;
+            let resultObj;
+
             const fetchObj = fetch('https://dummyjson.com/posts') //to check status: ok - 200 , fetching the posts
             //const fetchObj = fetch('https://dummyjson.com/postss') //to check status: Not found - 404, data not found 
             //const fetchObj = fetch('https://dummyjsson.com/posts') //to check failed to fetch error
@@ -16,30 +18,27 @@ document.getElementById("asyncBtn").addEventListener("click",
             })
 
          
-            await Promise.race([fetchObj, timer])
-                        .then((response) => {
-                            if(response.status === 200)
-                            {
-                                return response.json();
-                            }
-                            else if(response.status === 404)
-                            {
-                                return -1;
-                            }
-                        }
-                        )
-                        .then((jsonData => {
+            responseObj = await Promise.race([fetchObj, timer])
 
-                            if(jsonData === -1)
-                            {
-                                document.getElementById("tableContent").innerHTML = "Data not found";
-                            }
-                            else
-                            {
-                                display(jsonData)
-                            }
-                        }
-                        ))
+            if(responseObj.status === 200)
+            {
+                resultObj = await responseObj.json();
+            }
+            else if(responseObj.status === 404)
+            {
+                resultObj = -1;
+            }
+            
+
+            if(resultObj == -1)
+            {
+                document.getElementById("tableContent").innerHTML = "Data not found";
+            }
+            else
+            {
+                display(resultObj)
+            }
+                        
         }
         catch(error)
         {   
